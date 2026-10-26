@@ -1,3 +1,7 @@
+# GitHub Pages deploy for this site.
+# Builds with the committed instance.config.mjs (your identity + URL) and
+# publishes dist/. No custom-domain CNAME is injected.
+
 name: Deploy to GitHub Pages
 
 on:
@@ -30,39 +34,16 @@ jobs:
       - name: Install
         run: npm ci
 
-      - name: Build sample demo
-        env:
-          REFINED_X_INSTANCE_CONFIG: ${{ github.workspace }}/deploy/github-pages.config.mjs
-          PUBLIC_TURNSTILE_SITE_KEY: ${{ vars.PUBLIC_TURNSTILE_SITE_KEY }}
+      - name: Build
         run: npm run build
 
-      - name: Verify sample demo
-        env:
-          REFINED_X_INSTANCE_CONFIG: ${{ github.workspace }}/deploy/github-pages.config.mjs
+      - name: Verify
         run: npm run verify
 
-      - name: Inject custom domain CNAME
-        # Keep out of public/ so template clones do not inherit this domain.
-        run: echo 'demo.refined-x.com' > dist/CNAME
-
-      - name: Archive Pages artifact
-        run: |
-          tar \
-            --dereference --hard-dereference \
-            --directory dist \
-            --exclude=.git \
-            --exclude=.github \
-            -cvf "$RUNNER_TEMP/artifact.tar" \
-            .
-
       - name: Upload Pages artifact
-        uses: actions/upload-artifact@v7
+        uses: actions/upload-pages-artifact@v4
         with:
-          name: github-pages
-          path: ${{ runner.temp }}/artifact.tar
-          retention-days: 1
-          if-no-files-found: error
-          compression-level: 6
+          path: dist
 
   deploy:
     needs: build
