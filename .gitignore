@@ -15,9 +15,12 @@ examples/**/.wrangler/
 examples/**/node_modules/
 examples/**/worker-configuration.d.ts
 examples/public-ask-worker/wrangler.demo.jsonc
-instance.config.mjs
 node_modules/
 npm-debug.log*
 pnpm-debug.log*
 yarn-debug.log*
 yarn-error.log*
+
+# Private raw inputs for the authoring agent (drafts, CVs, papers — not published)
+_materials/*
+!_materials/README.md
